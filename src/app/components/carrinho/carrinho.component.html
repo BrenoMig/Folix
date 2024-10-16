@@ -1,0 +1,18 @@
+<div class="carrinho-container">
+    <h2>Meu Carrinho</h2>
+    <div *ngIf="produtosCarrinho.length > 0">
+        <ul>
+            <li *ngFor="let produto of produtosCarrinho">
+                {{ produto.nomeProduto }} - R$ {{ produto.valorKg | number: '1.2-2' }} por Kg
+                <button (click)="removerProduto(produto)">Remover</button>
+            </li>
+        </ul>
+        <div class="total-container">
+            <p>Total: R$ {{ total | number: '1.2-2' }}</p>
+        </div>
+        <button class="finalizar-compra" (click)="finalizarCompra()">Finalizar Compra</button>
+    </div>
+    <div *ngIf="produtosCarrinho.length === 0">
+        <p>Seu carrinho está vazio.</p>
+    </div>
+</div>
