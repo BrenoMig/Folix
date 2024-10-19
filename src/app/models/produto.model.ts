@@ -3,5 +3,6 @@ export interface Produto {
     nomeProduto: string;
     valorKg: number;
     produtoImagem: string;
+    quantidadeProduto: number;
     imagemBase64: string;
   }

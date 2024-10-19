@@ -9,7 +9,25 @@
                 <img [src]="'data:image/png;base64,' + produto.imagemBase64" alt="{{ produto.nomeProduto }}" class="produto-imagem">
                 <h3>{{ produto.nomeProduto }}</h3>
                 <p>R$ {{ produto.valorKg | number: '1.2-2' }} por Kg</p>
-                <button (click)="adicionarAoCarrinho(produto)">Adicionar ao Carrinho</button>
+
+                <!-- Controles de quantidade -->
+                <div class="quantidade-container">
+                    <button (click)="decrementarQuantidade(produto)">-</button>
+                    <input type="number" 
+                           id="quantidade-{{ produto.idProduto }}" 
+                           [value]="quantidadeDesejada[produto.idProduto] || 1" 
+                           min="1" 
+                           [max]="produto.quantidadeProduto" 
+                           readonly 
+                           class="quantidade-input">
+                    <button (click)="incrementarQuantidade(produto)">+</button>
+                </div>
+
+                <!-- Botão para adicionar ao carrinho -->
+                <button (click)="adicionarAoCarrinho(produto)" 
+                        [disabled]="!quantidadeDesejada[produto.idProduto] || quantidadeDesejada[produto.idProduto] < 1 || quantidadeDesejada[produto.idProduto] > produto.quantidadeProduto">
+                    Adicionar ao Carrinho
+                </button>
             </li>
         </ul>
     </div>
@@ -17,8 +35,7 @@
     <div *ngIf="produtos.length === 0">
         <p>Nenhum produto disponível no momento.</p>
     </div>
-    
-    <button (click)="voltar()">Voltar</button>
+   
     <button (click)="verCarrinho()">Ver Meu Carrinho</button>
     
     <!-- Botão Sobre Nós -->
@@ -41,8 +58,4 @@
         <ul>
             <li>Filipe Hideki Kwang - Gerente de projetos e DBA</li>
             <li>Breno Miguel Lima - Analista de sistemas Web e BackEnd</li>
-            <li>Henrique Farias Teixeira - Desenvolvedor Desktop e FrontEnd</li>
-            <li>Davison Gonçalves da Silva - Analista de projetos e Consultor ERP</li>
-        </ul>
-    </div>
-</div>
+            <li>Henrique Farias Teixeira - Desenvolvedor Deskt

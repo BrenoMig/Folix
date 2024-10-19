@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http'; // Importe o HttpClient
+import { Produto } from '../../models/produto.model'; // Importe seu modelo Produto
 
 @Component({
   selector: 'app-cadastro-compra',
@@ -11,7 +13,6 @@ import { Router } from '@angular/router';
   imports: [CommonModule, FormsModule]
 })
 export class CadastroCompraComponent {
-  // Lista de estados e suas siglas
   estados: { sigla: string; nome: string; }[] = [
     { sigla: 'SP', nome: 'São Paulo' },
     { sigla: 'RJ', nome: 'Rio de Janeiro' },
@@ -19,7 +20,6 @@ export class CadastroCompraComponent {
     // Adicione outros estados conforme necessário
   ];
 
-  // Mapeamento de cidades por estado
   cidadesPorEstado: { [sigla: string]: string[] } = {
     'SP': ['São Paulo', 'Campinas', 'Santos'],
     'RJ': ['Rio de Janeiro', 'Niterói', 'Petrópolis'],
@@ -37,13 +37,13 @@ export class CadastroCompraComponent {
   numeroCartao: string = '';
   validade: string = '';
   cvv: string = '';
+  private apiUrl = 'https://localhost:7258/api/produto'; // URL base da sua API para produtos
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private http: HttpClient) {
     this.carregarDados();
   }
 
   carregarDados() {
-    // Carregar dados do localStorage
     const dadosCompra = JSON.parse(localStorage.getItem('dadosCompra') || '{}');
     this.selectedEstado = dadosCompra.selectedEstado ?? '';
     this.rua = dadosCompra.rua ?? '';
@@ -54,23 +54,20 @@ export class CadastroCompraComponent {
     this.validade = dadosCompra.validade ?? '';
     this.cvv = dadosCompra.cvv ?? '';
 
-    // Atualizar lista de cidades conforme o estado
     if (this.selectedEstado) {
       this.atualizarCidades();
-      this.selectedCidade = dadosCompra.selectedCidade ?? ''; // Definir a cidade selecionada
+      this.selectedCidade = dadosCompra.selectedCidade ?? '';
     }
 
-    // Verificar se o formulário está válido após carregar os dados
     this.verificarFormulario();
   }
 
   atualizarCidades() {
     this.cidades = this.cidadesPorEstado[this.selectedEstado] || [];
-    this.selectedCidade = '';  // Limpar a cidade ao atualizar o estado
+    this.selectedCidade = '';
   }
 
   salvarDados() {
-    // Salvar dados no localStorage
     const dadosCompra = {
       selectedEstado: this.selectedEstado,
       selectedCidade: this.selectedCidade,
@@ -88,11 +85,39 @@ export class CadastroCompraComponent {
   concluirCompra() {
     if (this.formularioValido()) {
       this.salvarDados();
-      alert('Compra concluída com sucesso!');
-      this.router.navigate(['/home']);
+      this.finalizarCompra(); // Chame a função para finalizar a compra
     } else {
       alert('Por favor, preencha todos os campos corretamente.');
     }
+  }
+
+  finalizarCompra() {
+    // Obtenha os produtos do carrinho do localStorage
+    const produtosCarrinho = JSON.parse(localStorage.getItem('produtosCarrinho') || '[]');
+
+    // Atualiza a quantidade de cada produto no banco de dados
+    const atualizacoes = produtosCarrinho.map((produto: Produto) => {
+      const produtoAtualizado = {
+        idProduto: produto.idProduto,
+        nomeProduto: produto.nomeProduto,
+        valorKg: produto.valorKg,
+        produtoImagem: produto.produtoImagem,
+        quantidadeProduto: produto.quantidadeProduto - produto.quantidadeProduto // Subtrai a quantidade comprada do estoque
+      };
+      return this.http.put(`${this.apiUrl}/${produto.idProduto}`, produtoAtualizado); // Usando a URL da API
+    });
+
+    // Execute todas as requisições de atualização
+    Promise.all(atualizacoes)
+      .then(() => {
+        alert('Compra concluída com sucesso!');
+        localStorage.removeItem('produtosCarrinho'); // Limpa o carrinho após a compra
+        this.router.navigate(['/home']);
+      })
+      .catch(error => {
+        alert('Erro ao finalizar a compra. Tente novamente.');
+        console.error(error);
+      });
   }
 
   formularioValido(): boolean {
@@ -104,7 +129,6 @@ export class CadastroCompraComponent {
   }
 
   verificarFormulario() {
-    // Verifica se o formulário está válido após o carregamento dos dados
     if (!this.formularioValido()) {
       alert('Por favor, preencha todos os campos corretamente.');
     }

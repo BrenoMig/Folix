@@ -1,17 +1,28 @@
 <div class="carrinho-container">
     <h2>Meu Carrinho</h2>
+
+    <!-- Exibir produtos no carrinho -->
     <div *ngIf="produtosCarrinho.length > 0">
-        <ul>
-            <li *ngFor="let produto of produtosCarrinho">
-                {{ produto.nomeProduto }} - R$ {{ produto.valorKg | number: '1.2-2' }} por Kg
-                <button (click)="removerProduto(produto)">Remover</button>
+        <ul class="lista-produtos">
+            <li *ngFor="let produto of produtosCarrinho" class="produto-item">
+                <span class="produto-nome">{{ produto.nomeProduto }}</span> - 
+                <span class="produto-quantidade">{{ produto.quantidadeProduto }} Kg</span> - 
+                <span class="produto-valor">R$ {{ produto.valorKg | number: '1.2-2' }} por Kg</span>
+                <strong class="produto-subtotal">(Subtotal: R$ {{ (produto.valorKg * produto.quantidadeProduto) | number: '1.2-2' }})</strong>
+                <button class="btn-remover" (click)="removerProduto(produto)">Remover</button>
             </li>
         </ul>
+
+        <!-- Exibir total da compra -->
         <div class="total-container">
-            <p>Total: R$ {{ total | number: '1.2-2' }}</p>
+            <p>Total: <strong>R$ {{ total | number: '1.2-2' }}</strong></p>
         </div>
-        <button class="finalizar-compra" (click)="finalizarCompra()">Finalizar Compra</button>
+
+        <!-- Botão para finalizar compra -->
+        <button class="btn btn-success finalizar-compra" (click)="comprarProduto()">Comprar</button>
     </div>
+
+    <!-- Exibir mensagem caso o carrinho esteja vazio -->
     <div *ngIf="produtosCarrinho.length === 0">
         <p>Seu carrinho está vazio.</p>
     </div>

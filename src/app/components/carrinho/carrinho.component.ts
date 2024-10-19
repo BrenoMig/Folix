@@ -32,18 +32,20 @@ export class CarrinhoComponent implements OnInit {
     this.carregarCarrinho();
   }
 
-  finalizarCompra(): void {
+  comprarProduto(): void {
     if (this.produtosCarrinho.length > 0) {
+      // Limpa o carrinho
       this.carrinhoService.limparCarrinho();
       this.produtosCarrinho = [];
       this.total = 0;
-      this.router.navigate(['/compra']); 
+      
+      this.router.navigate(['/compra']);
     } else {
       alert('Seu carrinho está vazio.');
     }
   }
 
   calcularTotal(): void {
-    this.total = this.produtosCarrinho.reduce((sum, produto) => sum + produto.valorKg, 0);
+    this.total = this.produtosCarrinho.reduce((sum, produto) => sum + (produto.valorKg * produto.quantidadeProduto), 0);
   }
 }
