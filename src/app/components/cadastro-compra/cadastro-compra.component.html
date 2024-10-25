@@ -43,6 +43,9 @@
       <input type="text" id="cvv" placeholder="Código de segurança" [(ngModel)]="cvv" name="cvv" required>
     </div>
 
+   
+    <button type="button" class="btn voltar" (click)="voltar()">Voltar</button>
+    
     <button type="submit" class="botao-finalizar" [disabled]="!formularioValido()">Concluir Compra</button>
   </form>
 </div>

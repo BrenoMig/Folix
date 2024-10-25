@@ -18,6 +18,6 @@ export class ProdutoService {
 
   // Método para finalizar a compra
   finalizarCompra(produtosComprados: Produto[]): Observable<void> {
-    return this.http.post<void>(this.apiUrl + 'finalizar-compra', produtosComprados);
+    return this.http.post<void>(this.apiUrl + 'produto/finalizar-compra', produtosComprados);
   }
 }

@@ -9,8 +9,8 @@ import { routes } from './app.routes';
 import { HomeComponent } from './components/home/home.component';
 import { LoginComponent } from './components/login/login.component';
 import { InicialComponent } from './components/inicial/inicial.component'; 
-import { CadastroComponent } from './components/cadastro/cadastro.component'; // Importação
-import { CadastroCompraComponent } from './components/cadastro-compra/cadastro-compra.component'; // Importação
+import { CadastroComponent } from './components/cadastro/cadastro.component'; 
+import { CadastroCompraComponent } from './components/cadastro-compra/cadastro-compra.component'; 
 import { CompraComponent } from './components/compra/compra.component';
 
 @NgModule({
@@ -27,8 +27,8 @@ import { CompraComponent } from './components/compra/compra.component';
     CommonModule,
     HttpClientModule,
     RouterModule.forRoot(routes),
-    CadastroComponent, // Importação aqui
-    CadastroCompraComponent, // Importação aqui
+    CadastroComponent, 
+    CadastroCompraComponent, 
   ],
   bootstrap: [AppComponent]
 })

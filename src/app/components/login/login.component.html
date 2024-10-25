@@ -1,12 +1,14 @@
-<h2>Login</h2>
-<form (ngSubmit)="onLogin()">
-  <label for="login">Login (Email/CPF):</label>
-  <input type="text" id="login" [(ngModel)]="login" name="login" required>
+<div class="login-container">
+  <h2>Login</h2>
+  <form (ngSubmit)="onLogin()">
+    <label for="login">Login (Email/CPF):</label>
+    <input type="text" id="login" [(ngModel)]="login" name="login" required>
 
-  <label for="senha">Senha:</label>
-  <input type="password" id="senha" [(ngModel)]="senha" name="senha" required>
+    <label for="senha">Senha:</label>
+    <input type="password" id="senha" [(ngModel)]="senha" name="senha" required>
 
-  <button type="submit">Entrar</button>
-</form>
+    <button type="submit">Entrar</button>
+  </form>
 
-<button (click)="goToCadastro()">Não tenho cadastro</button>
+  <button (click)="goToCadastro()">Não tenho cadastro</button>
+</div>

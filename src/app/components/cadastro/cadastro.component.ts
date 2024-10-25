@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router'; 
 import { Usuario } from '../../models/usuario.model';
 import { UsuarioService } from '../../servicos/usuario.service';
 
@@ -9,32 +10,41 @@ import { UsuarioService } from '../../servicos/usuario.service';
   templateUrl: './cadastro.component.html',
   styleUrls: ['./cadastro.component.css'],
   standalone: true,
-  imports: [CommonModule, FormsModule], // Adicione isso
+  imports: [CommonModule, FormsModule],
 })
 export class CadastroComponent {
   usuario: Usuario = {
-    idUsuario: 0,
     nomeCompleto: '',
-    idade: 0,
+    idade: null,
     email: '',
-    telefone: 0,
-    cpf: 0,
+    telefone: '',
+    cpf: '',
     senha: ''
   };
 
-  constructor(private usuarioService: UsuarioService) {}
+  constructor(private usuarioService: UsuarioService, private router: Router) {} 
+
+  // Atualiza o CPF sem formatação
+  onCPFInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.usuario.cpf = input.value.replace(/\D/g, ''); 
+  }
 
   onSubmit() {
+    console.log(this.usuario); 
     this.usuarioService.cadastrar(this.usuario).subscribe(
       (response: Usuario) => {
         alert('Cadastro realizado com sucesso!');
-        // Navegar para a tela de login, se necessário
-        // Por exemplo, redirecionar para a página de login
-        // this.router.navigate(['/login']);
+        this.router.navigate(['/home']); 
       },
       (error: any) => {
         alert('Erro ao cadastrar: ' + error.message);
       }
     );
+  }
+
+  
+  navigateToLogin() {
+    this.router.navigate(['/login']); 
   }
 }

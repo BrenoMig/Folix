@@ -10,6 +10,6 @@ export class InicialComponent {
   constructor(private router: Router) {}
 
   irParaLogin() {
-    this.router.navigate(['/login']); // Redireciona para a página de login
+    this.router.navigate(['/login']); 
   }
 }

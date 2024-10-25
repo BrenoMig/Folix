@@ -10,7 +10,6 @@
                 <h3>{{ produto.nomeProduto }}</h3>
                 <p>R$ {{ produto.valorKg | number: '1.2-2' }} por Kg</p>
 
-                <!-- Controles de quantidade -->
                 <div class="quantidade-container">
                     <button (click)="decrementarQuantidade(produto)">-</button>
                     <input type="number" 
@@ -23,10 +22,9 @@
                     <button (click)="incrementarQuantidade(produto)">+</button>
                 </div>
 
-                <!-- Botão para adicionar ao carrinho -->
-                <button (click)="adicionarAoCarrinho(produto)" 
-                        [disabled]="!quantidadeDesejada[produto.idProduto] || quantidadeDesejada[produto.idProduto] < 1 || quantidadeDesejada[produto.idProduto] > produto.quantidadeProduto">
-                    Adicionar ao Carrinho
+                <button [ngClass]="estaNoCarrinho(produto.idProduto) ? 'remover' : 'adicionar'"
+                        (click)="alternarProdutoCarrinho(produto)">
+                    {{ estaNoCarrinho(produto.idProduto) ? 'Remover do Carrinho' : 'Adicionar ao Carrinho' }}
                 </button>
             </li>
         </ul>
@@ -35,13 +33,11 @@
     <div *ngIf="produtos.length === 0">
         <p>Nenhum produto disponível no momento.</p>
     </div>
-   
+
     <button (click)="verCarrinho()">Ver Meu Carrinho</button>
-    
-    <!-- Botão Sobre Nós -->
     <button (click)="mostrarSobreNos()">Sobre nós</button>
-    
-    <!-- Seção Sobre Nós -->
+    <button (click)="irParaInformacoesNutricionais()">Informações Nutricionais</button>
+
     <div *ngIf="exibirSobreNos" class="sobre-nos">
         <h2>Sobre Nós</h2>
         <p>A Startup FOLIX está no mercado de tecnologia alimentícia desde 2023 e surgiu de uma necessidade socioambiental para o cuidado, tanto com o meio ambiente quanto com as famílias que diariamente consomem produtos naturais.</p>
@@ -58,4 +54,8 @@
         <ul>
             <li>Filipe Hideki Kwang - Gerente de projetos e DBA</li>
             <li>Breno Miguel Lima - Analista de sistemas Web e BackEnd</li>
-            <li>Henrique Farias Teixeira - Desenvolvedor Deskt
+            <li>Henrique Farias Teixeira - Desenvolvedor Desktop</li>
+        </ul>
+    </div>
+</div>
+

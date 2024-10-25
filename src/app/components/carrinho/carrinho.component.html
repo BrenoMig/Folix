@@ -1,7 +1,7 @@
 <div class="carrinho-container">
     <h2>Meu Carrinho</h2>
 
-    <!-- Exibir produtos no carrinho -->
+   
     <div *ngIf="produtosCarrinho.length > 0">
         <ul class="lista-produtos">
             <li *ngFor="let produto of produtosCarrinho" class="produto-item">
@@ -13,17 +13,20 @@
             </li>
         </ul>
 
-        <!-- Exibir total da compra -->
+      
         <div class="total-container">
             <p>Total: <strong>R$ {{ total | number: '1.2-2' }}</strong></p>
         </div>
 
-        <!-- Botão para finalizar compra -->
+      
         <button class="btn btn-success finalizar-compra" (click)="comprarProduto()">Comprar</button>
     </div>
 
-    <!-- Exibir mensagem caso o carrinho esteja vazio -->
+   
     <div *ngIf="produtosCarrinho.length === 0">
         <p>Seu carrinho está vazio.</p>
     </div>
+
+  
+    <button class="btn btn-primary voltar" (click)="voltarParaHome()">Voltar</button>
 </div>

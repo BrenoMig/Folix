@@ -79,3 +79,17 @@ button {
   color: #333;
   margin-top: 20px;
 }
+
+.btn.voltar {
+  margin-top: 20px;
+  padding: 15px; 
+  font-size: 1.2em; 
+  background-color: #45a049; 
+  color: white; 
+  border: none;
+  border-radius: 8px; 
+  cursor: pointer;
+  width: 100%; 
+}
+
+

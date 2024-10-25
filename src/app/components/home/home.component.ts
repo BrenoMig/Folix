@@ -12,7 +12,8 @@ import { Produto } from '../../models/produto.model';
 export class HomeComponent implements OnInit {
   produtos: Produto[] = [];
   exibirSobreNos: boolean = false;
-  quantidadeDesejada: { [key: number]: number } = {}; // Objeto para armazenar a quantidade desejada por id do produto
+  quantidadeDesejada: { [key: number]: number } = {}; 
+  carrinhoProdutos: Produto[] = []; 
 
   constructor(
     private produtoService: ProdutoService,
@@ -22,13 +23,13 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.buscarProdutos();
+    this.carregarCarrinho(); 
   }
 
   buscarProdutos(): void {
     this.produtoService.getProdutos().subscribe(
       (produtos) => {
-        console.log(produtos);
-        this.produtos = produtos.map(produto => ({ ...produto, quantidadeDesejada: 1 })); // Adiciona a quantidade desejada como 1 por padrão
+        this.produtos = produtos.map(produto => ({ ...produto, quantidadeDesejada: 1 })); 
       },
       (error) => {
         console.error('Erro ao buscar produtos:', error);
@@ -36,22 +37,41 @@ export class HomeComponent implements OnInit {
     );
   }
 
-  adicionarAoCarrinho(produto: Produto): void {
-    const quantidade = this.quantidadeDesejada[produto.idProduto] || 1; // Pega a quantidade desejada ou 1 se não estiver definida
+  carregarCarrinho(): void {
+    this.carrinhoProdutos = this.carrinhoCompraService.obterCarrinho();
+  }
 
-    if (!quantidade || quantidade < 1) {
-      alert('Por favor, insira uma quantidade válida.');
-      return;
+  alternarProdutoCarrinho(produto: Produto): void {
+    const produtoNoCarrinho = this.carrinhoProdutos.find(item => item.idProduto === produto.idProduto);
+
+    if (produtoNoCarrinho) {
+      this.removerDoCarrinho(produto.idProduto); 
+    } else {
+      this.adicionarAoCarrinho(produto);
     }
 
-    const estoqueDisponivel = produto.quantidadeProduto; // Assume que este campo representa o estoque
-    if (quantidade > estoqueDisponivel) {
-      alert(`Desculpe, só temos ${estoqueDisponivel} Kg de ${produto.nomeProduto} disponíveis em estoque.`);
+    this.carregarCarrinho(); 
+  }
+
+  adicionarAoCarrinho(produto: Produto): void {
+    const quantidade = this.quantidadeDesejada[produto.idProduto] || 1;
+
+    if (quantidade > produto.quantidadeProduto) {
+      alert(`Desculpe, só temos ${produto.quantidadeProduto} Kg de ${produto.nomeProduto} disponíveis.`);
       return;
     }
 
     this.carrinhoCompraService.adicionarProduto({ ...produto, quantidadeProduto: quantidade });
     alert(`${quantidade} Kg de ${produto.nomeProduto} adicionado(s) ao carrinho!`);
+  }
+
+  removerDoCarrinho(idProduto: number): void {
+    this.carrinhoCompraService.removerProduto(idProduto);
+    alert('Produto removido do carrinho!');
+  }
+
+  estaNoCarrinho(idProduto: number): boolean {
+    return this.carrinhoProdutos.some(item => item.idProduto === idProduto);
   }
 
   verCarrinho(): void {
@@ -67,7 +87,11 @@ export class HomeComponent implements OnInit {
   }
 
   incrementarQuantidade(produto: Produto): void {
-    const estoqueDisponivel = produto.quantidadeProduto;
-    this.quantidadeDesejada[produto.idProduto] = Math.min(estoqueDisponivel, (this.quantidadeDesejada[produto.idProduto] || 1) + 1);
+    this.quantidadeDesejada[produto.idProduto] = Math.min(produto.quantidadeProduto, (this.quantidadeDesejada[produto.idProduto] || 1) + 1);
+  }
+
+  // Navegação para a página de Informações Nutricionais
+  irParaInformacoesNutricionais(): void {
+    this.router.navigate(['/informacoes']);
   }
 }

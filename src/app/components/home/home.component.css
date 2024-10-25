@@ -70,15 +70,27 @@ li button {
   margin-top: 10px;
   padding: 10px;
   font-size: 1em;
-  background-color: #4CAF50;
-  color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
 }
 
-li button:hover {
+li button.adicionar {
+  background-color: #4CAF50;
+  color: white;
+}
+
+li button.adicionar:hover {
   background-color: #45a049;
+}
+
+li button.remover {
+  background-color: #ccc;
+  color: #333;
+}
+
+li button.remover:hover {
+  background-color: #b3b3b3;
 }
 
 p {
@@ -121,6 +133,12 @@ button:hover {
   margin-bottom: 10px; /* Espaço abaixo do título */
 }
 
+.sobre-nos h3 {
+  font-size: 1.8em; /* Tamanho dos subtítulos */
+  color: #555; /* Cor dos subtítulos */
+  margin: 15px 0; /* Margem acima e abaixo do subtítulo */
+}
+
 .sobre-nos p {
   font-size: 1.1em; /* Tamanho da fonte do texto */
   color: #666; /* Cor do texto */
@@ -128,3 +146,16 @@ button:hover {
   max-width: 800px; /* Largura máxima para o texto */
   margin: 0 auto; /* Centraliza o texto */
 }
+
+.sobre-nos ul {
+  list-style-type: none; /* Remove as bolinhas da lista */
+  padding: 0; /* Remove padding */
+  margin: 20px 0; /* Margem acima e abaixo da lista */
+}
+
+.sobre-nos li {
+  font-size: 1em; /* Tamanho do texto da lista */
+  color: #444; /* Cor do texto da lista */
+  margin: 5px 0; /* Margem acima e abaixo de cada item */
+}
+

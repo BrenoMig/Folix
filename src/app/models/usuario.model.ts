@@ -1,10 +1,9 @@
 export interface Usuario {
-    idUsuario: number;
-    nomeCompleto: string;
-    idade: number;
-    email: string;
-    telefone: number;
-    cpf: number;
-    senha: string;
-  }
-  
+  idUsuario?: number;
+  nomeCompleto: string;
+  idade: number | null;
+  email: string;
+  telefone: string; 
+  cpf: string;      
+  senha: string;
+}

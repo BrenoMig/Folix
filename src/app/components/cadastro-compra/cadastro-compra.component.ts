@@ -2,8 +2,10 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http'; // Importe o HttpClient
-import { Produto } from '../../models/produto.model'; // Importe seu modelo Produto
+import { HttpClient } from '@angular/common/http'; 
+import { Produto } from '../../models/produto.model'; 
+import { CarrinhoCompraService } from '../../servicos/carrinho-compra.service';
+import { ProdutoService } from '../../servicos/produto.service';
 
 @Component({
   selector: 'app-cadastro-compra',
@@ -17,14 +19,14 @@ export class CadastroCompraComponent {
     { sigla: 'SP', nome: 'São Paulo' },
     { sigla: 'RJ', nome: 'Rio de Janeiro' },
     { sigla: 'MG', nome: 'Minas Gerais' },
-    // Adicione outros estados conforme necessário
+
   ];
 
   cidadesPorEstado: { [sigla: string]: string[] } = {
     'SP': ['São Paulo', 'Campinas', 'Santos'],
     'RJ': ['Rio de Janeiro', 'Niterói', 'Petrópolis'],
     'MG': ['Belo Horizonte', 'Uberlândia', 'Contagem'],
-    // Adicione outras cidades conforme necessário
+
   };
 
   cidades: string[] = [];
@@ -37,9 +39,9 @@ export class CadastroCompraComponent {
   numeroCartao: string = '';
   validade: string = '';
   cvv: string = '';
-  private apiUrl = 'https://localhost:7258/api/produto'; // URL base da sua API para produtos
+  private apiUrl = 'https://localhost:7258/api/produto'; 
 
-  constructor(private router: Router, private http: HttpClient) {
+  constructor(private router: Router, private http: HttpClient, private carrinhoService : CarrinhoCompraService, private produtoService : ProdutoService) {
     this.carregarDados();
   }
 
@@ -85,39 +87,28 @@ export class CadastroCompraComponent {
   concluirCompra() {
     if (this.formularioValido()) {
       this.salvarDados();
-      this.finalizarCompra(); // Chame a função para finalizar a compra
+      this.finalizarCompra(); 
     } else {
       alert('Por favor, preencha todos os campos corretamente.');
     }
   }
 
-  finalizarCompra() {
-    // Obtenha os produtos do carrinho do localStorage
-    const produtosCarrinho = JSON.parse(localStorage.getItem('produtosCarrinho') || '[]');
-
-    // Atualiza a quantidade de cada produto no banco de dados
-    const atualizacoes = produtosCarrinho.map((produto: Produto) => {
-      const produtoAtualizado = {
-        idProduto: produto.idProduto,
-        nomeProduto: produto.nomeProduto,
-        valorKg: produto.valorKg,
-        produtoImagem: produto.produtoImagem,
-        quantidadeProduto: produto.quantidadeProduto - produto.quantidadeProduto // Subtrai a quantidade comprada do estoque
-      };
-      return this.http.put(`${this.apiUrl}/${produto.idProduto}`, produtoAtualizado); // Usando a URL da API
-    });
-
-    // Execute todas as requisições de atualização
-    Promise.all(atualizacoes)
-      .then(() => {
+  async finalizarCompra() {
+    const produtosCarrinho = this.carrinhoService.obterCarrinho();
+    console.log(produtosCarrinho);
+    this.produtoService.finalizarCompra(produtosCarrinho).subscribe(
+      (produtos) => {
         alert('Compra concluída com sucesso!');
-        localStorage.removeItem('produtosCarrinho'); // Limpa o carrinho após a compra
+        this.carrinhoService.limparCarrinho();
         this.router.navigate(['/home']);
-      })
-      .catch(error => {
-        alert('Erro ao finalizar a compra. Tente novamente.');
-        console.error(error);
-      });
+       
+      },
+      (error) => {
+        alert(error.error);
+        console.error('Erro ao buscar produtos:', error);
+      }
+    );
+
   }
 
   formularioValido(): boolean {
@@ -127,6 +118,11 @@ export class CadastroCompraComponent {
       this.numeroCartao && this.validade && this.cvv
     );
   }
+
+  voltar() {  
+    this.router.navigate(['/carrinho']); 
+  }
+  
 
   verificarFormulario() {
     if (!this.formularioValido()) {
